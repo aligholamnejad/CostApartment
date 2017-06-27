@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CostApartmentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ApartmentUnit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Owner" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="NameUnit" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="Meter" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CurrentCost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TermId" Type="int" Nullable="false" />
+          <Property Name="WaterCost" Type="decimal" Precision="25" Scale="5" />
+          <Property Name="ElectricityCost" Type="decimal" Precision="25" Scale="5" />
+          <Property Name="GasCost" Type="decimal" Precision="25" Scale="5" />
+        </EntityType>
+        <EntityType Name="Term">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NameTerm" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_CurrentCost_Term">
+          <End Role="Term" Type="Self.Term" Multiplicity="1" />
+          <End Role="CurrentCost" Type="Self.CurrentCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Term">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CurrentCost">
+              <PropertyRef Name="TermId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CostApartmentModelStoreContainer">
+          <EntitySet Name="ApartmentUnit" EntityType="Self.ApartmentUnit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CurrentCost" EntityType="Self.CurrentCost" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Term" EntityType="Self.Term" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CurrentCost_Term" Association="Self.FK_CurrentCost_Term">
+            <End Role="Term" EntitySet="Term" />
+            <End Role="CurrentCost" EntitySet="CurrentCost" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CostApartmentModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ApartmentUnit">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="NameUnit" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="Meter" Type="Int32" Nullable="false" />
+          <Property Name="Owner" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="CostApartmentEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ApartmentUnits" EntityType="Self.ApartmentUnit" />
+          <EntitySet Name="Terms" EntityType="CostApartmentModel.Term" />
+          <EntitySet Name="CurrentCosts" EntityType="CostApartmentModel.CurrentCost" />
+          <AssociationSet Name="FK_CurrentCost_Term" Association="CostApartmentModel.FK_CurrentCost_Term">
+            <End Role="Term" EntitySet="Terms" />
+            <End Role="CurrentCost" EntitySet="CurrentCosts" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Term">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NameTerm" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CurrentCosts" Relationship="CostApartmentModel.FK_CurrentCost_Term" FromRole="Term" ToRole="CurrentCost" />
+        </EntityType>
+        <EntityType Name="CurrentCost">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TermId" Type="Int32" Nullable="false" />
+          <Property Name="WaterCost" Type="Decimal" Precision="25" Scale="5" />
+          <Property Name="ElectricityCost" Type="Decimal" Precision="25" Scale="5" />
+          <Property Name="GasCost" Type="Decimal" Precision="25" Scale="5" />
+          <NavigationProperty Name="Term" Relationship="CostApartmentModel.FK_CurrentCost_Term" FromRole="CurrentCost" ToRole="Term" />
+        </EntityType>
+        <Association Name="FK_CurrentCost_Term">
+          <End Type="CostApartmentModel.Term" Role="Term" Multiplicity="1" />
+          <End Type="CostApartmentModel.CurrentCost" Role="CurrentCost" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Term">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CurrentCost">
+              <PropertyRef Name="TermId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CostApartmentModelStoreContainer" CdmEntityContainer="CostApartmentEntities">
+          <EntitySetMapping Name="ApartmentUnits">
+            <EntityTypeMapping TypeName="CostApartmentModel.ApartmentUnit">
+              <MappingFragment StoreEntitySet="ApartmentUnit">
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="NameUnit" ColumnName="NameUnit" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Meter" ColumnName="Meter" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Terms">
+            <EntityTypeMapping TypeName="CostApartmentModel.Term">
+              <MappingFragment StoreEntitySet="Term">
+                <ScalarProperty Name="NameTerm" ColumnName="NameTerm" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CurrentCosts">
+            <EntityTypeMapping TypeName="CostApartmentModel.CurrentCost">
+              <MappingFragment StoreEntitySet="CurrentCost">
+                <ScalarProperty Name="GasCost" ColumnName="GasCost" />
+                <ScalarProperty Name="ElectricityCost" ColumnName="ElectricityCost" />
+                <ScalarProperty Name="WaterCost" ColumnName="WaterCost" />
+                <ScalarProperty Name="TermId" ColumnName="TermId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
