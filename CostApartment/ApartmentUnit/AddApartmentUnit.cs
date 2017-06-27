@@ -19,6 +19,7 @@ namespace CostApartment.ApartmentUnit
 
         Model.CostApartmentEntities db = new Model.CostApartmentEntities();
         public int currencyRowId = 0;
+
         private void btn_Save_Click(object sender, EventArgs e)
         {
             if (currencyRowId == 0)
